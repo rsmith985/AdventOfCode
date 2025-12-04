@@ -16,10 +16,13 @@ public static class GeometryExt
     public static Point Plus(this Point p, int num) => new Point(p.X+num, p.Y+num);
     public static Point Plus(this Point p, int x, int y) => new Point(p.X+x, p.Y+y);
     public static Point Plus(this Point p, Point p2) => new Point(p.X+p2.X, p.Y+p2.Y);
+    public static Point Minus(this Point p, int num) => new Point(p.X-num, p.Y-num);
+    public static Point Minus(this Point p, int x, int y) => new Point(p.X-x, p.Y-y);
+    public static Point Minus(this Point p, Point p2) => new Point(p.X-p2.X, p.Y-p2.Y);
     public static Point Mult(this Point p, int num) => new Point(p.X*num, p.Y*num);
     public static Point Mult(this Point p, Point p2) => new Point(p.X*p2.X, p.Y*p2.Y);
     public static Point Divide(this Point p, int num) => new Point(p.X/num, p.Y/num);
-    public static Point Divide(this Point p, Point p2) => new Point(p.X/p.X, p.Y/p.Y);
+    public static Point Divide(this Point p, Point p2) => new Point(p.X/p2.X, p.Y/p2.Y);
     public static Point Invert(this Point p) => p.Mult(-1);
 
     public static PointF Plus(this PointF p, float num) => new PointF(p.X+num, p.Y+num);

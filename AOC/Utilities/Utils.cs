@@ -82,12 +82,14 @@ public static class Utils
             yield return i;
     }
 
+    public static readonly Direction[] Directions8 = [Direction.N, Direction.NE, Direction.E, Direction.SE, Direction.S, Direction.SW, Direction.W, Direction.NW];
 }
 
 public enum Direction
 {
     N,S,E,W,NW,NE,SW,SE
 }
+
 public static class DirExt
 {
     public static bool IsVert(this Direction dir) => dir == Direction.N || dir == Direction.S;
@@ -130,6 +132,22 @@ public static class DirExt
             'E' or 'R' or '>' => Direction.E,
             'W' or 'L' or '<' => Direction.W,
             _ => throw new Exception()
+        };
+    }
+
+    public static Point ToPoint(this Direction d, int dist = 1)
+    {
+        return d switch
+        {
+            Direction.N => new Point(0, -dist),
+            Direction.S => new Point(0, dist),
+            Direction.E => new Point(dist, 0),
+            Direction.W => new Point(-dist, 0),
+            Direction.NW => new Point(-dist, -dist),
+            Direction.NE => new Point(dist, -dist),
+            Direction.SW => new Point(-dist, dist),
+            Direction.SE => new Point(dist, dist),
+            _ => new Point(0,0)
         };
     }
 

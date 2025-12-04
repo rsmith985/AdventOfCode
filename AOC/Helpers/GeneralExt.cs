@@ -354,4 +354,18 @@ public static class Ext
         charArray[pos] = c;
         return new string(charArray.ToArray());
     }
+
+    public static IEnumerable<(T i1, T i2)> ToAdjacentPairs<T>(this IEnumerable<T> list)
+    {
+        using var item = list.GetEnumerator();
+        
+        item.MoveNext();
+        T last = item.Current;
+        while (item.MoveNext())
+        {
+            T cur = item.Current;
+            yield return (last, cur);
+            last = cur;
+        }
+    }
 }

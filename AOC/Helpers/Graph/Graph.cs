@@ -181,6 +181,16 @@ public class Node<T>
         this.Edges = new List<Edge<T>>();
     }
 
+    public bool IsConnectedTo(Node<T> node)
+    {
+        foreach(var e in this.Edges)
+        {
+            if(e.GetOpposite(this) == node)
+                return true;
+        }
+        return false;
+    }
+
     public Edge<T> GetNext(Edge<T> edge)
     {
         if(this.Edges.Count != 2) throw new Exception();
