@@ -25,3 +25,29 @@ public struct Coord
         return (this.X, this.Y).GetHashCode();
     }
 }
+
+public struct Coord3
+{
+    public long X{get;set;}
+    public long Y{get;set;}
+    public long Z{get;set;}
+
+    public Coord3(long x, long y, long z)
+    {
+        this.X = x;
+        this.Y = y;
+        this.Z = z;
+    }
+
+    public Coord Plus(long x, long y) => new Coord(this.X + x, this.Y + y);
+    public Coord Plus(Coord p2) => new Coord(this.X + p2.X, this.Y + p2.Y);
+
+    public override bool Equals([NotNullWhen(true)] object obj)
+    {
+        return obj is Coord coord && this.X == coord.X && this.Y == coord.Y;
+    }
+    public override int GetHashCode()
+    {
+        return (this.X, this.Y).GetHashCode();
+    }
+}

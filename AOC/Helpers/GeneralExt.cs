@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Security.Cryptography.X509Certificates;
 
 namespace rsmith985.AOC;
 
@@ -250,6 +251,59 @@ public static class Ext
         }
         return rv;
     }
+    public static char[,] Transpose(this char[,] input)
+    {
+        int w = input.GetLength(0);
+        int h = input.GetLength(1);
+        var rv = new char[h, w];
+
+        for (int x = 0; x < w; x++)
+        {
+            for (int y = 0; y < h; y++)
+            {
+                rv[y, x] = input[x, y];
+            }
+        }
+
+        return rv;
+    }
+
+    public static char[,] RemoveRow(this char[,] input, int row = -1)
+    {
+        int w = input.GetLength(0);
+        int h = input.GetLength(1);
+        var rv = new char[w, h - 1];
+        if(row < 0) row = h - 1;
+        
+        for (int y = 0; y < h; y++)
+        {
+            if(y == row) continue;
+            var r = y < row ? y : y - 1;
+            for (int x = 0; x < w; x++)
+            {
+                rv[x, r] = input[x, y];
+            }
+        }
+        return rv;
+    }
+    public static char[,] RemoveCol(this char[,] input, int col = -1)
+    {
+        int w = input.GetLength(0);
+        int h = input.GetLength(1);
+        var rv = new char[w - 1, h];
+        if(col < 0) col = h - 1;
+        
+        for (int x = 0; x < w; x++)
+        {
+            if(x == col) continue;
+            var c = x < col ? x : x - 1;
+            for (int y = 0; y < h; y++)
+            {
+                rv[c, y] = input[x, y];
+            }
+        }
+        return rv;
+    }
     public static IEnumerable<Point> GetPointsInGrid(this Size s)
     {
         for(int x = 0; x < s.Width; x++)
@@ -265,7 +319,9 @@ public static class Ext
     public static Size GetSize(this IList<string> input) => new Size(input[0].Length, input.Count);
     public static char GetValueAt(this IList<string> array, Point p) => array[p.Y][p.X];
     public static T Get<T>(this T[,] array, Point p) => array[p.X, p.Y];
+    public static T Get<T>(this T[,] array, int x, int y) => array[x, y];
     public static void Set<T>(this T[,] array, Point p, T val) => array[p.X, p.Y] = val;
+    public static void Set<T>(this T[,] array, int x, int y, T val) => array[x, y] = val;
     public static IEnumerable<T> GetAll<T>(this T[,] array)
     {
         for(int x = 0; x < array.GetLength(0); x++)
@@ -283,19 +339,6 @@ public static class Ext
         }
     }
 
-    public static void PrintToConsole<T>(this T[,] grid, string sep = "")
-        => PrintToConsole(grid, i => i.ToString(), sep);
-    public static void PrintToConsole<T>(this T[,] grid, Func<T, string> conversion, string sep = "")
-    {
-        for(int y = 0; y < grid.GetLength(1); y++)
-        {
-            for(int x = 0; x < grid.GetLength(0); x++)
-            {
-                Console.Write(conversion(grid[x,y]) + sep);
-            }
-            Console.WriteLine();
-        }
-    }
     #endregion
 
     #region To Tuple
@@ -334,11 +377,30 @@ public static class Ext
     #endregion
 
     #region Debugging
-    public static string Print<T>(this IEnumerable<T> objs, char sep = ',')
+    public static string PrintableString<T>(this IEnumerable<T> objs, char sep = ',')
         => string.Join(sep, objs.ToArray());
-    public static string PrintLines(this string[] input)
+    public static string PrintableString(this string[] input)
         => string.Join('\n', input);
+    public static void PrintToConsole<T>(this IEnumerable<T> objs, char sep = ',')
+        => Console.WriteLine(string.Join(sep, objs.ToArray()));
+    public static void PrintToConsole(this string[] input)
+        => Console.WriteLine(string.Join('\n', input));
+    public static void PrintToConsole<T>(this T[,] grid, string sep = "")
+        => PrintToConsole(grid, i => i.ToString(), sep);
+    public static void PrintToConsole<T>(this T[,] grid, Func<T, string> conversion, string sep = "")
+    {
+        for(int y = 0; y < grid.GetLength(1); y++)
+        {
+            for(int x = 0; x < grid.GetLength(0); x++)
+            {
+                Console.Write(conversion(grid[x,y]) + sep);
+            }
+            Console.WriteLine();
+        }
+    }
     #endregion
+
+    public static int ToNum(this char c) => c - 48;
 
     public static Stack<T> Clone<T>(this Stack<T> input)
     {
@@ -355,17 +417,32 @@ public static class Ext
         return new string(charArray.ToArray());
     }
 
-    public static IEnumerable<(T i1, T i2)> ToAdjacentPairs<T>(this IEnumerable<T> list)
+    #region Pairs
+    public static IEnumerable<(T i1, T i2)> GetAdjacentPairs<T>(this IEnumerable<T> list, bool wrap = false)
     {
         using var item = list.GetEnumerator();
         
         item.MoveNext();
         T last = item.Current;
+        var first = last;
         while (item.MoveNext())
         {
             T cur = item.Current;
             yield return (last, cur);
             last = cur;
         }
+        if(wrap)
+            yield return (last, first);
     }
+    public static IEnumerable<(T i1, T i2)> GetAllPairs<T>(this IList<T> list)
+    {
+        for(int i = 0; i < list.Count - 1; i++)
+        {
+            for(int j = i + 1; j < list.Count; j++)
+            {
+                yield return (list[i], list[j]);
+            }
+        }
+    }
+    #endregion
 }

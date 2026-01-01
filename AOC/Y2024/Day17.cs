@@ -12,7 +12,7 @@ public class Day17 : Day
 
         var output = runProgram(nums, reg);
 
-        return output.Print();
+        return output.PrintableString();
     }
 
     public override object Part2()

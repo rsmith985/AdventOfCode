@@ -9,14 +9,14 @@ namespace rsmith985.AOC;
 
 public static class Utils
 {
-    public static void DownloadInput(int day)
+    public static void DownloadInput(int year, int day)
     {
         #pragma warning disable
         var client = new WebClient();
         client.Headers.Add(HttpRequestHeader.Cookie, $"session={Const.SESSION_ID}");
         client.DownloadFile(
-            $"https://adventofcode.com/{Const.YEAR}/day/{day}/input", 
-            $"../../../Y{Const.YEAR}/inputs/input{day}.txt");
+            $"https://adventofcode.com/{year}/day/{day}/input", 
+            $"../../../Y{year}/inputs/input{day}.txt");
         #pragma warning restore
     }
 

@@ -45,7 +45,7 @@ public class Day24 : Day
     {
         var invalid = new string[]{"wpq", "grf", "z18", "fvw", "z22", "mdb", "z36", "nwq"};
         var sorted = invalid.OrderBy(i => i);
-        return sorted.Print();
+        return sorted.PrintableString();
 
         /*
         (var nets, var funcs) = parseInput();

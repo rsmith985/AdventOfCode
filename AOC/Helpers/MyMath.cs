@@ -1,7 +1,7 @@
 ﻿
 namespace rsmith985.AOC;
 
-public class MyMath
+public static class MyMath
 {
     public static long LCM(params long[] nums)
     {
@@ -24,4 +24,7 @@ public class MyMath
         }
         return a|b;
     }
+
+    // Handles negative numbers correctly
+    public static int Mod(this int num, int mod) => ((num % mod) + mod) % mod;
 }

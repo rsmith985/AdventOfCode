@@ -113,7 +113,7 @@ public class DirectedGraph<T>
         while(queue.Any())
         {
             var curr = queue.Dequeue();
-            foreach(var conn in curr.ConnectedTo())
+            foreach(var conn in curr.GetConnectedTo())
             {
                 if(conn == end) 
                     return true;
@@ -125,6 +125,97 @@ public class DirectedGraph<T>
             }
         }
         return false;
+    }
+
+    /// <summary>
+    /// Same as GetPaths, but doesn't track actual path if just need count so runs faster
+    /// </summary>
+    public int CountPaths_NoCycles(DirectedNode<T> start, DirectedNode<T> end)
+    {
+        var queue = new Queue<DirectedNode<T>>();
+        var visited = new HashSet<T>();
+
+        queue.Enqueue(start);
+        visited.Add(start.Data);
+
+        var paths = 0;
+        while(queue.Any())
+        {
+            var curr = queue.Dequeue();
+            foreach(var edge in curr.EdgesTo)
+            {
+                if(edge.To == end)
+                {
+                    paths++;
+                    continue;
+                }
+
+                queue.Enqueue(edge.To);
+            }
+        }
+        return paths;
+    }
+    /// <summary>
+    /// Returns all paths between 2 points.  This doesn't check for cycles and so wouldn't return if there is one
+    /// </summary>
+    public List<List<DirectedEdge<T>>> GetAllPaths_NoCycles(DirectedNode<T> start, DirectedNode<T> end)
+    {
+        var queue = new Queue<(DirectedNode<T> node, List<DirectedEdge<T>> path)>();
+        var visited = new HashSet<T>();
+
+        queue.Enqueue((start, new List<DirectedEdge<T>>()));
+        visited.Add(start.Data);
+
+        var paths = new List<List<DirectedEdge<T>>>();
+        while(queue.Any())
+        {
+            var curr = queue.Dequeue();
+            var node = curr.node;
+            var path = curr.path.ToList();
+            foreach(var edge in node.EdgesTo)
+            {
+                path.Add(edge);
+                if(edge.To == end)
+                {
+                    paths.Add(path);
+                    continue;
+                }
+
+                queue.Enqueue((edge.To, path));
+            }
+        }
+        return paths;
+    }
+
+
+    public List<HashSet<T>> GetAllPaths_ContainsCycles(DirectedNode<T> start, DirectedNode<T> end)
+    {
+        var queue = new Queue<(DirectedNode<T> node, HashSet<T> path)>();
+
+        queue.Enqueue((start, new HashSet<T>()));
+
+        var paths = new List<HashSet<T>>();
+        while(queue.Any())
+        {
+            var curr = queue.Dequeue();
+            var node = curr.node;
+            var path = new HashSet<T>(curr.path);
+            foreach(var edge in node.EdgesTo)
+            {
+                if(path.Contains(edge.To.Data)) 
+                    continue;
+
+                path.Add(edge.To.Data);
+                if(edge.To == end)
+                {
+                    paths.Add(path);
+                    path.PrintToConsole();
+                    continue;
+                }
+                queue.Enqueue((edge.To, path));
+            }
+        }
+        return paths;
     }
 
     public DirectedGraph<T> Copy(bool? edgesUnique = null)
@@ -143,7 +234,7 @@ public class DirectedGraph<T>
         foreach(var item in itemsInSubGraph)
         {
             var node = this.Nodes[item];
-            foreach(var conn in node.ConnectedTo())
+            foreach(var conn in node.GetConnectedTo())
             {
                 if(itemsInSubGraph.Contains(conn.Data))
                     rv.Add((item, conn.Data));
@@ -167,9 +258,14 @@ public class DirectedNode<T>
         this.EdgesFrom = new List<DirectedEdge<T>>();
     }
 
-    public IEnumerable<DirectedNode<T>> ConnectedTo()
+    public IEnumerable<DirectedNode<T>> GetConnectedTo()
     {
         foreach(var edge in this.EdgesTo)
+            yield return edge.GetOpposite(this);
+    }
+    public IEnumerable<DirectedNode<T>> GetConnectedFrom()
+    {
+        foreach(var edge in this.EdgesFrom)
             yield return edge.GetOpposite(this);
     }
 }

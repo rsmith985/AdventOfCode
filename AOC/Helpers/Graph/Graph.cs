@@ -173,6 +173,8 @@ public class Node<T>
 
     public List<Edge<T>> Edges{get;}
 
+    public int ArrayIndex{get;set;} = 0;
+
     public int Degree => this.Edges.Count;
 
     public Node(T data)
@@ -212,7 +214,7 @@ public class Node<T>
     }
 }
 
-public class Edge<T>
+public class Edge<T> : IComparable<Edge<T>>
 {
     public string Key{get;}
     public Node<T> Node1{get; private set;}
@@ -235,6 +237,12 @@ public class Edge<T>
         if(node == this.Node2) return this.Node1;
         throw new Exception();
     }
+    public T GetOpposite(T node)
+    {
+        if(node.Equals(this.Node1.Data)) return this.Node2.Data;
+        if(node.Equals(this.Node2.Data)) return this.Node1.Data;
+        throw new Exception();
+    }
 
     internal void _SwapNode(Node<T> orig, Node<T> newNode)
     {
@@ -250,5 +258,12 @@ public class Edge<T>
             newNode.Edges.Add(this);
             this.Node2 = newNode;
         }
+    }
+
+    public int CompareTo(Edge<T> edge)
+    {
+        return 
+            this.Weight == edge.Weight ? 0 :
+            this.Weight < edge.Weight ? -1 : 1;
     }
 }

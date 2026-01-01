@@ -1,12 +1,12 @@
 ﻿namespace rsmith985.AOC;
 
 
-public class Line
+public class SlopeInterceptLine
 {
     public Coord P1 {get; set;}
     public Coord P2 {get; set;}
 
-    public Line(Coord p1, Coord p2)
+    public SlopeInterceptLine(Coord p1, Coord p2)
     {
         this.P1 = p1;
         this.P2 = p2;
@@ -26,7 +26,7 @@ public class Line
         this.DeltaX = this.P1.X - this.P2.X;
     }
 
-    public (double X, double Y) GetIntersectionPointWith(Line l2)
+    public (double X, double Y) GetIntersectionPointWith(SlopeInterceptLine l2)
     {
         var l1 = this;
         if(l1.Slope == l2.Slope) return (double.NaN, double.NaN);

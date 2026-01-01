@@ -47,7 +47,7 @@ public class Day23 : Day
                 if(cliques.Count != 1) throw new Exception();
 
                 var first = cliques.First();
-                return first.Select(i => i.Data).OrderBy(i => i).Print();
+                return first.Select(i => i.Data).OrderBy(i => i).PrintableString();
             }
 
         }

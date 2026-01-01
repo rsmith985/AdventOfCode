@@ -32,7 +32,7 @@ public class Day12 : Day
     private long solve(string text, int[] nums)
     {
         var txt = simplify(text);
-        var key = txt + "_" + nums.Print();
+        var key = txt + "_" + nums.PrintableString();
         if(_cache.ContainsKey(key)) return _cache[key];
 
         var ans = solve_(txt, nums);

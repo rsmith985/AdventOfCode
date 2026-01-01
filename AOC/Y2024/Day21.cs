@@ -74,7 +74,7 @@ public class Day21 : Day
         //Console.WriteLine(line);
 
         var next = new List<string>();
-        foreach(var pair in line.ToAdjacentPairs())
+        foreach(var pair in line.GetAdjacentPairs())
         {
             var seq = keypad.GetSequence(pair) + "A";
             next.Add(seq);

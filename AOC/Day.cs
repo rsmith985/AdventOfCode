@@ -41,7 +41,7 @@ public abstract class Day
         }
         if(!File.Exists(_file))
         {
-            Utils.DownloadInput(this.Num);
+            Utils.DownloadInput(this.Year, this.Num);
             if(!File.Exists(_file))
             {
                 Console.WriteLine($"Couldn't find inputs/input{this.Num}.txt");
@@ -57,6 +57,7 @@ public abstract class Day
             var part1 = this.Part1();
             timer.Stop();
             Console.WriteLine($"{dayStr} | Part 1: {part1}  | {timer.ElapsedMilliseconds} ms");
+            long timeP1 = timer.ElapsedMilliseconds;
             try
             {
                 timer = Stopwatch.StartNew();
@@ -72,6 +73,7 @@ public abstract class Day
                 var part2 = this.Part2();
                 timer.Stop();
                 Console.WriteLine($"{dayStr} | Part 2: {part2}  | {timer.ElapsedMilliseconds} ms");
+                Console.WriteLine($"Total Time: {timeP1 + timer.ElapsedMilliseconds} ms");
             } 
             catch(NotImplementedException) { }
             try
@@ -114,7 +116,7 @@ public abstract class Day
     protected char[,] GetGrid_Char()
         => GetGrid(i => i);
     protected int[,] GetGrid_Int()
-        => GetGrid(i => i - 48);
+        => GetGrid(i => i.ToNum());
 
     protected List<(string k, string v)> GetKVList(char sep = ' ')
     {
